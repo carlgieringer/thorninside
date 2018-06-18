@@ -12,25 +12,25 @@ app.get('/', (request, response) => {
 });
 
 app.get('/reports', (request, response) => {
-  response.json(scanReports());
+  scanReports(reports => response.json(reports))
 });
 
 app.get('/reports/:reportId', (request, response) => {
   const reportId = request.params.reportId;
-  response.json(getReport(reportId));
+  getReport(reportId, report => response.json(report))
 });
 
-const scanReports = () => {
+const scanReports = (callback) => {
   const params = {
     TableName: process.env.DYNAMODB_TABLE,
   };
-  return dynamoDb.scan(params, (error) => {
+  return dynamoDb.scan(params, (error, data) => {
     if (error) throw error
-    return data['Items']
+    callback(data['Items'])
   });
 }
 
-const getReport = (reportId) => {
+const getReport = (reportId, callback) => {
   const params = {
     Key: {
       "reportId": {
@@ -41,7 +41,7 @@ const getReport = (reportId) => {
   };
   return dynamoDb.getItem(params, (error) => {
     if (error) throw error
-    return data['Item']
+    callback(data['Item'])
   });
 }
 

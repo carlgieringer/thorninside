@@ -11,6 +11,7 @@ provider:
   region: us-east-1
   environment:
     DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+    REPORT_API_BASE_URL: https://rex2hkddx4.execute-api.us-east-1.amazonaws.com/prod/
   iamRoleStatements:
     - Effect: Allow
       Action:

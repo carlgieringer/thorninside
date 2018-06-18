@@ -12,7 +12,7 @@ const app = express()
 app.get('/', function (req, res) {
   const startDate = moment().subtract(1, 'day').valueOf()
   const endDate = moment().valueOf()
-  axios.get(`https://rex2hkddx4.execute-api.us-east-1.amazonaws.com/prod/reports?startDate=${startDate}&endDate=${endDate}`)
+  axios.get(`${process.env.REPORT_API_BASE_URL}reports?startDate=${startDate}&endDate=${endDate}`)
     .then(reportsResponse => {
       const reportIds = reportsResponse.data['reportIds']
       console.debug('fetching reportIds: ' + JSON.stringify(reportIds))
@@ -42,7 +42,7 @@ app.get('/', function (req, res) {
 })
 
 const requestAndStoreReportData = reportId =>
-  axios.get(`https://rex2hkddx4.execute-api.us-east-1.amazonaws.com/prod/reports/${reportId}`)
+  axios.get(`${process.env.REPORT_API_BASE_URL}/reports/${reportId}`)
     .then(response => {
       console.log(`fetched reportId: ${reportId}`)
       return writeToDynamo(response.data)
