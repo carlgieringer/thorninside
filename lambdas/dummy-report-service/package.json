@@ -5,7 +5,6 @@
   "license": "UNLICENSED",
   "private": false,
   "dependencies": {
-    "axios": "^0.18.0",
     "express": "^4.16.3",
     "serverless-http": "^1.6.0"
   }
