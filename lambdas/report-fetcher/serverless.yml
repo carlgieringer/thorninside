@@ -29,21 +29,21 @@ functions:
       - http: ANY /
       - http: 'ANY {proxy+}'
 
-resources:
-  Resources:
-    ThornReportsDynamoDbTable:
-      Type: 'AWS::DynamoDB::Table'
-      DeletionPolicy: Retain
-      Properties:
-        AttributeDefinitions:
-          -
-            AttributeName: reportId
-            AttributeType: N
-        KeySchema:
-          -
-            AttributeName: reportId
-            KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
-        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+#resources:
+#  Resources:
+#    ThornReportsDynamoDbTable:
+#      Type: 'AWS::DynamoDB::Table'
+#      DeletionPolicy: Retain
+#      Properties:
+#        AttributeDefinitions:
+#          -
+#            AttributeName: reportId
+#            AttributeType: N
+#        KeySchema:
+#          -
+#            AttributeName: reportId
+#            KeyType: HASH
+#        ProvisionedThroughput:
+#          ReadCapacityUnits: 1
+#          WriteCapacityUnits: 1
+#        TableName: ${self:provider.environment.DYNAMODB_TABLE}

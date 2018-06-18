@@ -37,7 +37,7 @@ app.get('/', function (req, res) {
     })
     .catch(error => {
       console.log(error);
-      response.json({'message': 'failed to write reports'});
+      res.json({'message': 'failed to write reports'});
     });
 })
 

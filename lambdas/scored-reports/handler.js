@@ -1,6 +1,5 @@
 const serverless = require('serverless-http');
 const express = require('express');
-const data = require('./data.js');
 const app = express();
 
 const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
