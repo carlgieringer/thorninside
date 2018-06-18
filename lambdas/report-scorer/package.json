@@ -1,0 +1,12 @@
+{
+  "name": "report-fetcher",
+  "version": "1.0.0",
+  "main": "n",
+  "license": "UNLICENSED",
+  "private": false,
+  "dependencies": {
+    "axios": "^0.18.0",
+    "express": "^4.16.3",
+    "serverless-http": "^1.6.0"
+  }
+}
