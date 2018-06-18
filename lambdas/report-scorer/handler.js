@@ -16,6 +16,11 @@
 
 // module.exports.handler = serverless(app);
 
+// "industryClassification":"A1"
+// "priority: { priorityId: 1-3 E } }
+// number of uploaded files
+// severity of each file
+
 console.log('Loading function');
 
 exports.handler = async (event, context) => {

@@ -1,6 +1,7 @@
 const serverless = require('serverless-http');
 const express = require('express');
 const axios = require('axios');
+const moment = require('moment')
 
 const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
 
@@ -9,7 +10,9 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const app = express()
 
 app.get('/', function (req, res) {
-  axios.get('https://rex2hkddx4.execute-api.us-east-1.amazonaws.com/prod/reports')
+  const startDate = moment().subtract(1, 'day').valueOf()
+  const endDate = moment().valueOf()
+  axios.get(`https://rex2hkddx4.execute-api.us-east-1.amazonaws.com/prod/reports?startDate=${startDate}&endDate=${endDate}`)
     .then(reportsResponse => {
       const reportIds = reportsResponse.data['reportIds']
       console.debug('fetching reportIds: ' + JSON.stringify(reportIds))
@@ -50,6 +53,7 @@ const requestAndStoreReportData = reportId =>
     })
 
 const writeToDynamo = (reportData) => {
+  reportData = addScoreToReport(reportData);
   const params = {
     TableName: process.env.DYNAMODB_TABLE,
     Item: reportData,
@@ -57,6 +61,7 @@ const writeToDynamo = (reportData) => {
   return dynamoDb.put(params, (error) => {
     // handle potential errors
     if (error) {
+      console.log(error)
       return {
         success: false,
         statusCode: error.statusCode || 501,
@@ -68,6 +73,20 @@ const writeToDynamo = (reportData) => {
       success: true
     }
   });
+}
+
+function addScoreToReport(reportData){
+  let ourScore = -1;
+  let priorityLevel = reportData['additionalNcmecInformation']['priority']['priorityId'];
+  if(priorityLevel == "1")
+    ourScore = 1;
+  else if(priorityLevel == "2")
+    ourScore = 0.5;
+  else if(priorityLevel == "3")
+    ourScore = 0;
+  if (ourScore >= 0)
+    reportData['ourScore'] = ourScore;
+  return reportData;
 }
 
 module.exports.handler = serverless(app);
