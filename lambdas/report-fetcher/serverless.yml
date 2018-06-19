@@ -12,6 +12,9 @@ provider:
   environment:
     DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
     REPORT_API_BASE_URL: https://rex2hkddx4.execute-api.us-east-1.amazonaws.com/prod/
+    USE_ML_PREDICTION_SCORE: TRUE
+    PREDICT_ENDPOINT: https://realtime.machinelearning.us-east-1.amazonaws.com
+    ML_MODEL_ID: ml-kNmn5ZT7X18
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -22,6 +25,14 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+    - Effect: Allow
+      Action:
+        - machinelearning:Predict
+      Resource: "arn:aws:machinelearning:us-east-1:770206509958:mlmodel/ml-kNmn5ZT7X18"
+
+# User: arn:aws:sts::770206509958:assumed-role/report-fetcher-prod-us-east-1-lambdaRole/report-fetcher-prod-app is
+# not authorized to perform:
+# machinelearning:Predict on resource: arn:aws:machinelearning:us-east-1:770206509958:mlmodel/ml-kNmn5ZT7X18
 
 functions:
   app:
