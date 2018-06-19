@@ -27,12 +27,8 @@ provider:
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
     - Effect: Allow
       Action:
-        - machinelearning:Predict
-      Resource: "arn:aws:machinelearning:us-east-1:770206509958:mlmodel/ml-kNmn5ZT7X18"
-
-# User: arn:aws:sts::770206509958:assumed-role/report-fetcher-prod-us-east-1-lambdaRole/report-fetcher-prod-app is
-# not authorized to perform:
-# machinelearning:Predict on resource: arn:aws:machinelearning:us-east-1:770206509958:mlmodel/ml-kNmn5ZT7X18
+        - machinelearning:*
+      Resource: "arn:aws:machinelearning:us-east-1:770206509958:mlmodel/${self:provider.environment.ML_MODEL_ID}"
 
 functions:
   app:
@@ -40,22 +36,26 @@ functions:
     events:
       - http: ANY /
       - http: 'ANY {proxy+}'
+      # At midnight and noon
+      - schedule: cron(0 0,12 * * *)
 
-#resources:
-#  Resources:
-#    ThornReportsDynamoDbTable:
-#      Type: 'AWS::DynamoDB::Table'
-#      DeletionPolicy: Retain
-#      Properties:
-#        AttributeDefinitions:
-#          -
-#            AttributeName: reportId
-#            AttributeType: N
-#        KeySchema:
-#          -
-#            AttributeName: reportId
-#            KeyType: HASH
-#        ProvisionedThroughput:
-#          ReadCapacityUnits: 1
-#          WriteCapacityUnits: 1
-#        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+# We had errors trying to update the lambda after the initial creation of the dynamo table, so we had to comment
+#  the following out:
+resources:
+  Resources:
+    ThornReportsDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: reportId
+            AttributeType: N
+        KeySchema:
+          -
+            AttributeName: reportId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
