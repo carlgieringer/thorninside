@@ -23,7 +23,7 @@ app.get('/reports/:reportId', (request, response) => {
 app.post('/reports/:reportId', (request, response) => {
   const reportId = request.params.reportId;
   const newLabel = request.body['newLabel']
-  updateReportLabel(reportId, report => response.json(report))
+  updateReportLabel(reportId, newLabel, () => response.json({message: "Success"}))
 });
 
 const scanReports = (callback) => {
@@ -66,6 +66,7 @@ const updateReportLabel = (reportId, newLabel, callback) => {
   return dynamoDb.putItem(params, (error, data) => {
     if (error) throw error
     console.log(data)
+    callback()
   });
 }
 
