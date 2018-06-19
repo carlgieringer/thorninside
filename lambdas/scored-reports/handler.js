@@ -20,6 +20,12 @@ app.get('/reports/:reportId', (request, response) => {
   getReport(reportId, report => response.json(report))
 });
 
+app.post('/reports/:reportId', (request, response) => {
+  const reportId = request.params.reportId;
+  const newLabel = request.body['newLabel']
+  updateReportLabel(reportId, report => response.json(report))
+});
+
 const scanReports = (callback) => {
   const params = {
     TableName: process.env.DYNAMODB_TABLE,
@@ -39,10 +45,30 @@ const getReport = (reportId, callback) => {
     },
     TableName: process.env.DYNAMODB_TABLE,
   };
-  return dynamoDb.getItem(params, (error) => {
+  return dynamoDb.getItem(params, (error, data) => {
     if (error) throw error
     callback(data['Item'])
   });
 }
+
+const updateReportLabel = (reportId, newLabel, callback) => {
+  const params = {
+    Item: {
+      "reportId": {
+        N: +reportId
+      },
+      "Label": {
+        S: newLabel
+      }
+    },
+    TableName: process.env.DYNAMODB_TABLE,
+  };
+  return dynamoDb.putItem(params, (error, data) => {
+    if (error) throw error
+    console.log(data)
+  });
+}
+
+
 
 module.exports.handler = serverless(app);

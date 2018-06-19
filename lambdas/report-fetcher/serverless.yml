@@ -14,7 +14,8 @@ provider:
     REPORT_API_BASE_URL: https://rex2hkddx4.execute-api.us-east-1.amazonaws.com/prod/
     USE_ML_PREDICTION_SCORE: TRUE
     PREDICT_ENDPOINT: https://realtime.machinelearning.us-east-1.amazonaws.com
-    ML_MODEL_ID: ml-kNmn5ZT7X18
+#    ML_MODEL_ID: ml-kNmn5ZT7X18
+    ML_MODEL_ID: ml-ObPr0P4AjgL
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -37,7 +38,7 @@ functions:
       - http: ANY /
       - http: 'ANY {proxy+}'
       # At midnight and noon
-      - schedule: cron(0 0,12 * * *)
+      - schedule: cron(0 0,12 * * * *)
 
 # We had errors trying to update the lambda after the initial creation of the dynamo table, so we had to comment
 #  the following out:
